@@ -2,3 +2,5 @@ sounds/
 *.zip
 venv/
 __pycache__/
+
+src/qt/build*
