@@ -21,29 +21,41 @@ Keyboard::~Keyboard(){
     spaceRelease.clear();
 }
 
-QSound* Keyboard::getSound(std::vector<QSound*> &qsound, int &prIndex){
+QSound* Keyboard::getSound(std::vector<QSound*> &qsound, unsigned long long &prIndex){
     // get random index from [ prIndex, qsound.size() )
-    int randIndex = prIndex + std::rand() % (qsound.size() - prIndex);
+    unsigned long long rand = static_cast<unsigned long long>(std::rand());
+    unsigned long long randIndex = prIndex + rand % (qsound.size() - prIndex);
 
     std::swap(qsound[prIndex], qsound[randIndex]);
 
-    int i = prIndex;
+    unsigned long long i = prIndex;
 
     prIndex = ++prIndex % qsound.size();
+
+    qDebug() << qsound[i];
 
     return qsound[i];
 }
 
+Keyboard::Keyboard()
+{
+}
+
 Keyboard::Keyboard(QString kbDir)
 {
-    const QString sm = kbDir + "small\\";
-    const QString md = kbDir + "medium\\";
-    const QString sp = kbDir + "space\\";
+    this->loadSounds(kbDir);
+}
+
+void Keyboard::loadSounds(){
+    const QString sm = this->kbSoundDir + "small\\";
+    const QString md = this->kbSoundDir + "medium\\";
+    const QString sp = this->kbSoundDir + "space\\";
 
     const QString p = "keypress\\";
     const QString r = "keyrelease\\";
 
-    for (int i = 0; i < 50; i++){
+    for (int i = 0; i < 5; i++){
+    //for (int i = 0; i < 50; i++){
         const QString press = p + "keypress_" + QString::number(i) + ".wav";
         const QString release = r + "keyrelease_" + QString::number(i) + ".wav";
 
@@ -62,6 +74,11 @@ Keyboard::Keyboard(QString kbDir)
         this->mediumRelease.push_back(mdR);
         this->spaceRelease.push_back(spR);
     }
+}
+
+void Keyboard::loadSounds(QString kbDir){
+    this->kbSoundDir = kbDir;
+    this->loadSounds();
 }
 
 void Keyboard::play(int scanCode, bool isPressed){
@@ -95,6 +112,8 @@ void Keyboard::play(int scanCode, bool isPressed){
                     break;
                 default:
                     getSound(this->smallPress, this->sPi)->play();
+                case 0:
+                    break;
             }
         }
     } else {
@@ -114,6 +133,8 @@ void Keyboard::play(int scanCode, bool isPressed){
                 break;
             default:
                 getSound(this->smallRelease, this->sRi)->play();
+            case 0:
+                break;
         }
     }
 }

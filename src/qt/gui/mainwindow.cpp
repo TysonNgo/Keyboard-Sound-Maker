@@ -13,7 +13,7 @@
 #include <iostream>
 
 HHOOK hKeyboardHook;
-Keyboard kb = Keyboard("C:\\some\\path\\to\\keyboard_dir\\");
+Keyboard kb = Keyboard();
 
 LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
